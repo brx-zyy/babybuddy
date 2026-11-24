@@ -58,6 +58,7 @@ class ImportPermissionPoCTestCase(TestCase):
         )
 
         self.assertFalse(result.has_errors(), result.row_errors())
+        self.assertFalse(result.has_validation_errors())
         note.refresh_from_db()
         self.assertEqual(note.note, "Overwritten by add-only user")
 
