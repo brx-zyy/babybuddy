@@ -5,8 +5,10 @@ application code or weaken any security checks.
 """
 
 import tempfile
+from io import BytesIO
 
 import tablib
+from PIL import Image
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth import get_user_model
@@ -96,14 +98,8 @@ class CaregiverAuthorizationPoCTestCase(APITestCase):
         self.assertFalse(self.caregiver.has_perm("core.delete_timer"))
 
     def test_note_image_upload_works_when_uploads_are_disabled(self):
-        png = (
-            b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR"
-            b"\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06"
-            b"\x00\x00\x00\x1f\x15\xc4\x89"
-            b"\x00\x00\x00\x0bIDAT\x08\xd7c\xf8\x0f"
-            b"\x00\x01\x01\x01\x00\x18\xdd\x8d\xb4"
-            b"\x00\x00\x00\x00IEND\xaeB\x60\x82"
-        )
+        image_bytes = BytesIO()
+        Image.new("RGB", (1, 1)).save(image_bytes, format="PNG")
         with tempfile.TemporaryDirectory() as media_root:
             disabled_baby_buddy = {
                 **settings.BABY_BUDDY,
@@ -113,7 +109,9 @@ class CaregiverAuthorizationPoCTestCase(APITestCase):
                 BABY_BUDDY=disabled_baby_buddy, MEDIA_ROOT=media_root
             ):
                 image = SimpleUploadedFile(
-                    "upload-disabled-poc.png", png, content_type="image/png"
+                    "upload-disabled-poc.png",
+                    image_bytes.getvalue(),
+                    content_type="image/png",
                 )
                 response = self.client.post(
                     reverse("api:note-list"),
