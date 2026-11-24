@@ -5,7 +5,6 @@ application code or weaken any security checks.
 """
 
 import tempfile
-from datetime import timezone as datetime_timezone
 
 import tablib
 from django.conf import settings
@@ -118,7 +117,11 @@ class CaregiverAuthorizationPoCTestCase(APITestCase):
                 )
                 response = self.client.post(
                     reverse("api:note-list"),
-                    {"child": 1, "note": "Upload restriction PoC", "image": image},
+                    {
+                        "child": 1,
+                        "note": "Upload restriction PoC",
+                        "image": image,
+                    },
                     format="multipart",
                 )
 
