@@ -85,7 +85,9 @@ class CaregiverAuthorizationPoCTestCase(APITestCase):
                 username="security-poc-caregiver", password="caregiver-password"
             )
         )
-        self.other_user = get_user_model().objects.get(username="admin")
+        self.other_user = get_user_model().objects.create_user(
+            username="security-poc-timer-owner", password="owner-password"
+        )
 
     def test_caregiver_can_create_timer_owned_by_another_user(self):
         response = self.client.post(
@@ -117,7 +119,7 @@ class CaregiverAuthorizationPoCTestCase(APITestCase):
                 response = self.client.post(
                     reverse("api:note-list"),
                     {
-                        "child": 1,
+                        "child": models.Child.objects.first().pk,
                         "note": "Upload restriction PoC",
                         "image": image,
                     },
