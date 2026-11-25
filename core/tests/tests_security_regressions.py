@@ -49,10 +49,8 @@ class ImportPermissionPoCTestCase(TestCase):
         model_admin = core_admin.NoteAdmin(models.Note, admin.site)
         self.assertTrue(model_admin.has_import_permission(request))
 
-        dataset = tablib.Dataset(headers=["id", "child_id", "note", "time"])
-        dataset.append(
-            [note.pk, child.pk, "Overwritten by add-only user", note.time.isoformat()]
-        )
+        dataset = tablib.Dataset(headers=["id", "child_id", "note"])
+        dataset.append([note.pk, child.pk, "Overwritten by add-only user"])
         result = core_admin.NoteImportExportResource().import_data(
             dataset, dry_run=False
         )
