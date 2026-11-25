@@ -77,9 +77,7 @@ class CaregiverAuthorizationPoCTestCase(APITestCase):
         self.caregiver.groups.add(
             Group.objects.get(name=settings.BABY_BUDDY["CAREGIVER_GROUP_NAME"])
         )
-        self.caregiver = get_user_model().objects.get(
-            username="security-poc-caregiver"
-        )
+        self.caregiver = get_user_model().objects.get(username="security-poc-caregiver")
         self.assertTrue(
             self.client.login(
                 username="security-poc-caregiver", password="caregiver-password"
